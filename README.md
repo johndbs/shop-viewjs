@@ -22,3 +22,8 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+
+### Dependencies
+
+[vue-axios](https://www.npmjs.com/package/vue-axios) 
