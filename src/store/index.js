@@ -4,7 +4,8 @@ import axios from 'axios'
 export default createStore({
   state: {
     products: [],
-    productsInBag: []
+    productsInBag: [],
+    deliveryAddress: {},
   },
   mutations: {
     loadProducts(state, products){
@@ -22,6 +23,9 @@ export default createStore({
     },
     loadBag (state, products) {
       state.productsInBag = products;
+    },
+    setDeliveryAdress(state, address){
+      state.deliveryAddress = address;
     },
   },
   actions: {
@@ -50,6 +54,10 @@ export default createStore({
       if(localStorage.getItem('productsInBag')){
         commit('loadBag', JSON.parse(localStorage.getItem('productsInBag')));
       }
+    },
+
+    setDeliveryAdress({commit}, address){
+      commit('setDeliveryAdress', address);
     },
 
 

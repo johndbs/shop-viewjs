@@ -3,7 +3,7 @@
       <div class="items">
   
         <template v-if="productsInBag.length">
-            <div v-for="(product, index) in productsInBag" :key="index"
+          <div v-for="(product, index) in productsInBag" :key="index"
             class="item"
           >
             <div class="remove" @click="this.$store.dispatch('removeFromBag', product.id)">Remove item</div>
@@ -20,6 +20,12 @@
             </div>
           </div>
           <div class="grand-total"> Grand Total: US$ {{ orderTotal() }}</div>
+
+          <!-- Import the DeleveryForm component -->
+          <DeliveryForm @submit-form="handleSubmit" 
+            :initialFormData="deliveryAddress"/>
+
+
         </template>
 
         <template v-else>
@@ -33,20 +39,33 @@
   </template>
   
   <script>
+
 import { mapState } from 'vuex';
+import DeliveryForm from '@/components/DeliveryForm.vue';
 
   
   export default {
     name: 'ShoppingBasket',
+
+    components: {
+      DeliveryForm
+    },
   
     methods: {
       orderTotal(){
         return this.productsInBag.reduce( (sum, item) => sum += (item.quantity *  item.price), 0 );
+      },
+
+      handleSubmit(form){
+        console.log('Form submitted '+ JSON.stringify(form));
+        this.$store.dispatch('setDeliveryAdress', form);
+        this.$router.push({name: 'Recap'});
       }
     },
 
     computed: mapState([
-      'productsInBag'
+      'productsInBag',
+      'deliveryAddress'
     ]),
 
    
