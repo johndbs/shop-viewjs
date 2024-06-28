@@ -2,59 +2,59 @@
     <div class="home">
       <div class="products">
   
-        <div v-for="(product, index) in products" 
-          :key="index"
-          class="product"
-          :class="{inBag :  isInBag(product)}"
-        >
+        <div v-if="product" class="product" >
           <div class="product-image" :style="{backgroundImage: 'url(' + product.image + ')'}"></div>
           <h4>{{ product.title }}</h4>
-          <p class="price">US$ {{ product.price.toFixed(2) }}</p>
-          
-          <button v-if="isInBag(product)" @click="removeFromBag(product)" class="remove" >Remove from bag</button>
-          <button v-else @click="addToBag(product)">Add to bag</button>
-          <div></div>
-          <router-link :to="`/product/${product.id}`">View</router-link>
+          <p class="price">US$ {{ product.price?.toFixed(2) }}</p>
         </div>
-  
+        <div v-else>
+          <span>Product not found</span>
+        </div>
       </div>
-      {{ productsInBag.length }}
+
     </div>
   </template>
   
   <script>
+import { useRoute } from 'vue-router';
 import { mapState } from 'vuex'
 
   
   export default {
-    name: 'HomePage',
+    name: 'ProductPage',
+
     data() {
       return {
-        
+        route : useRoute(),
+        productId : null,
       }
     },
 
-    computed: mapState([
-      'products',
-      'productsInBag'
-    ]),
+    computed: {
+      ...mapState([
+        'products',
+        'productsInBag'
+      ]),
+      product() { 
+        const product = this.products.find(item => item.id == this.productId);
+        console.log('product id: ' + this.productId +  ' product :'+ JSON.stringify(product));
+        return product;
+      }
+    } ,
 
-  
-    methods: {
-      addToBag(product){
-        console.log('Click on addToBag button');
-        this.$store.dispatch('addToBag', {...product, quantity:1});
-      },
+    watch: {
+      '$route': {
+        immediate: true,
+        handler(newVal) {
+          this.productId = newVal.params.id;
+        }
+      }
+    },
 
-      isInBag(product) {
-        return this.productsInBag.find(item => item.id == product.id);
-      },
+    // mounted(){
+    //   this.productId = this.route.params.id;
+    // },
 
-      removeFromBag(product){
-        this.$store.dispatch('removeFromBag', product.id);
-      },
-
-    }
   }
   </script>
   
